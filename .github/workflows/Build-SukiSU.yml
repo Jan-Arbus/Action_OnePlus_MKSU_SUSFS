@@ -4,7 +4,7 @@ on:
     inputs:
       CPU:
         type: choice
-        description: "分支"
+        description: "SOC分支"
         required: true
         default: sm8550
         options:
@@ -20,8 +20,9 @@ on:
         type: choice
         description: "配置文件"
         required: true
-        default: oneplus_ace2_pro_v
+        default: oneplus_12r_b
         options:
+          - V=COS/OOS15，B=COS/OOS16，不要选错，否则可能不开机
           - oneplus_nord_ce4_v
           - oneplus_nord_ce4_b
           - oneplus_ace_3v_v
@@ -83,7 +84,7 @@ on:
         type: choice
         description: "内核安卓版本"
         required: true
-        default: android15
+        default: android13
         options:
           - android12
           - android13
