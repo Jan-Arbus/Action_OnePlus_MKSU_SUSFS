@@ -1,4 +1,4 @@
-name: Build OnePlus_SukiSU Ultra All
+name: Build OnePlus_ReSukiSU All
 on:
   workflow_dispatch:
     inputs:
@@ -201,18 +201,18 @@ jobs:
           git add -A
           git commit -m "Force remove -dirty suffix from kernel version"
 
-      # 添加 SukiSU Ultra
-      - name: Add KernelSU-SukiSU Ultra
+      # 添加 ReSukiSU
+      - name: Add KernelSU-ReSukiSU
         run: |
           cd kernel_workspace/kernel_platform
-          curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s builtin
+          curl -LSs "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/refs/heads/main/kernel/setup.sh" | bash -s builtin
           cd ./KernelSU
           KSU_VERSION=$(expr $(/usr/bin/git rev-list --count main) "+" 10606)
           echo "KSUVER=$KSU_VERSION" >> $GITHUB_ENV
           export KSU_VERSION=$KSU_VERSION
           sed -i "s/DKSU_VERSION=12800/DKSU_VERSION=${KSU_VERSION}/" kernel/Makefile
 
-      - name: Apply Patches SukiSU Ultra
+      - name: Apply Patches
         run: |
           cd kernel_workspace
           git clone https://gitlab.com/simonpunk/susfs4ksu.git -b gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}
@@ -259,7 +259,7 @@ jobs:
           CONFIG_FILE=./common/arch/arm64/configs/gki_defconfig
           KERNEL_VERSION="${{ github.event.inputs.KERNEL_VERSION }}"
 
-          # SukiSU Ultra config
+          # ReSukiSU config
           echo "CONFIG_KSU=y" >> "$CONFIG_FILE"
           echo "CONFIG_KPM=y" >> "$CONFIG_FILE"
 
@@ -460,5 +460,5 @@ jobs:
       - name: Upload AnyKernel3
         uses: actions/upload-artifact@v4
         with:
-          name: AnyKernel3_SukiSUUltra_${{ env.KSUVER }}_${{ steps.file_clean.outputs.value }}${{ steps.suffix.outputs.value }}
+          name: AnyKernel3_ReSukiSU_${{ env.KSUVER }}_${{ steps.file_clean.outputs.value }}${{ steps.suffix.outputs.value }}
           path: ./AnyKernel3/*
