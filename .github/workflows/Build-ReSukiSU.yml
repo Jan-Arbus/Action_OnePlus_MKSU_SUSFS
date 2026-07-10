@@ -211,6 +211,20 @@ jobs:
           cp ../susfs4ksu/kernel_patches/include/linux/* ./common/include/linux/
           cd ./common
           patch -p1 < 50_add_susfs_in_gki-${{ github.event.inputs.ANDROID_VERSION }}-${{ github.event.inputs.KERNEL_VERSION }}.patch || true
+          
+          # ---------------------------------------------------------
+          # 手动修复 mm/memory.c 漏打的头文件补丁
+          if ! grep -q "#include <linux/susfs_def.h>" mm/memory.c; then
+              echo "Patch missed susfs_def.h in mm/memory.c, fixing it manually..."
+              # 尝试插在 vmalloc.h 后面
+              sed -i '/#include <linux\/vmalloc.h>/a #include <linux\/susfs_def.h>' mm/memory.c
+              # 如果一加内核连 vmalloc.h 都没有，就插在 mm.h 后面作为备用方案
+              if ! grep -q "#include <linux/susfs_def.h>" mm/memory.c; then
+                  sed -i '/#include <linux\/mm.h>/a #include <linux\/susfs_def.h>' mm/memory.c
+              fi
+          fi
+          # ---------------------------------------------------------
+          
           echo "完成"
 
       # 配置信息
